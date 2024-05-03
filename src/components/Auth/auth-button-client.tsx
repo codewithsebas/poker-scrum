@@ -1,23 +1,53 @@
 "use client";
-import { CornerDownLeft, Grid2x2Check } from 'lucide-react';
+import { Check, Copy, CornerDownLeft, Grid2x2Check } from 'lucide-react';
 import { type Session, createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { useRouter, usePathname, redirect } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
+import { useState } from 'react';
+import CopyButton from '../Copybutton';
+import { Provider } from '@supabase/supabase-js';
 
 export function AuthButtonClient({ session }: { session: Session | null }) {
     const supabase = createClientComponentClient();
     const router = useRouter()
     const pathname = usePathname()
+    const [roomState, setRoomState] = useState("");
+    const [newURL, seNewURL] = useState("");
 
     const handleSignOut = async () => {
         await supabase.auth.signOut()
         router.refresh()
     }
 
-    const startRoom = () => {
-        router.push('room');
-    }
+    const generateRandomNumber = () => {
+        return Math.floor(Math.random() * 9000) + 1000;
+    };
 
-    const AuthProviderButton = ({ provider, className, children }: { provider: string, className: string, children: React.Node }) => {
+    const startRoom = () => {
+        const roomId = generateRandomNumber();
+        setRoomState(roomId.toString());
+
+        // Obtener la URL actual
+        const currentUrl = new URL(window.location.href);
+
+        // Verificar si "team" ya está presente en la ruta
+        if (!currentUrl.pathname.startsWith('/team')) {
+            // Si no está presente, agregar "team" al principio de la ruta
+            currentUrl.pathname = '/team' + currentUrl.pathname;
+        }
+
+        // Establecer el parámetro "room" en la URL
+        currentUrl.searchParams.set('room', roomId.toString());
+
+        // Actualizar la URL en la barra de direcciones
+        window.history.pushState({ path: currentUrl.href }, '', currentUrl.href);
+        const Url = window.location.href;
+        seNewURL(Url)
+    };
+
+
+
+
+    const AuthProviderButton = ({ provider, className, children }: { provider: Provider, className: string, children: React.ReactNode }) => {
 
         const handleSignIn = async () => {
             try {
@@ -25,7 +55,7 @@ export function AuthButtonClient({ session }: { session: Session | null }) {
                     provider,
                     options: { redirectTo: 'http://localhost:3000/auth/callback' }
                 });
-            } catch (error) {
+            } catch (error: any) {
                 console.error(`Error signing in with ${provider}:`, error.message);
             }
         };
@@ -63,10 +93,10 @@ export function AuthButtonClient({ session }: { session: Session | null }) {
             )}
             {session && (
                 <div className='flex flex-col gap-2'>
-                    {pathname !== '/room' && (
-                        <button className="flex w-full items-center justify-center gap-2 rounded-lg border border-indigo-600 bg-indigo-600 p-2 pe-4 text-sm font-semibold text-white duration-300 hover:border-indigo-500 hover:bg-indigo-500" onClick={startRoom}>
+                    {pathname !== '/team' && (
+                        <button className="flex w-full items-center justify-center gap-2 rounded-lg border border-blue-600 bg-blue-600 p-2 pe-4 text-sm font-semibold text-white duration-300 hover:border-blue-500 hover:bg-blue-500" onClick={startRoom}>
                             <Grid2x2Check size={16} />
-                            <span>Iniciar sala</span>
+                            <span>{roomState ? 'Crear nueva sala' : 'Crear sala'}</span>
                         </button>
                     )}
 
@@ -74,6 +104,13 @@ export function AuthButtonClient({ session }: { session: Session | null }) {
                         <CornerDownLeft size={16} />
                         <span>Cerrar sesión</span>
                     </button>
+
+                    {roomState ? (
+                        <div className='w-full py-2 px-4 bg-green-100 rounded-lg flex justify-between items-center text-center'>
+                            <span className='w-full'>{roomState}</span>
+                            <CopyButton url={newURL} />
+                        </div>
+                    ) : null}
                 </div>
             )}
         </div>

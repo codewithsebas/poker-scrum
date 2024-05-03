@@ -53,7 +53,7 @@ export function AuthButtonClient({ session }: { session: Session | null }) {
             try {
                 await supabase.auth.signInWithOAuth({
                     provider,
-                    options: { redirectTo: 'http://localhost:3000/auth/callback' }
+                    options: { redirectTo: 'https://poker-scrum.vercel.app/auth/callback' }
                 });
             } catch (error: any) {
                 console.error(`Error signing in with ${provider}:`, error.message);

@@ -13,5 +13,9 @@ export async function GET(request: NextRequest) {
     await supabase.auth.exchangeCodeForSession(code);
   }
 
-  return NextResponse.redirect(requestUrl.origin);
+  // Obtener el dominio del encabezado Host
+  const host = request.headers.get("Host");
+
+  // Redirigir al dominio actual
+  return NextResponse.redirect(`https://${host}`);
 }

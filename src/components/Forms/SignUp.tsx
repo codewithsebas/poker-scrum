@@ -1,31 +1,22 @@
-import Link from "next/link"
-import { AuthButtonServer } from "../Auth/auth-button-server"
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
-import { cookies } from "next/headers";
-import Image from "next/image";
+import { ArrowUpCircle, CodeXml } from "lucide-react";
 
 export default async function FormSignUp() {
-  const supabase = createServerComponentClient({ cookies })
-  const { data: { session } } = await supabase.auth.getSession()
-  const avatar_url = session?.user.user_metadata.avatar_url
-  const full_name = session?.user.user_metadata.full_name
-
   return (
-    <div className="flex w-full max-w-xs flex-col gap-5 sm:max-w-sm md:px-0 md:pb-4 2xl:max-w-md">
+    <div className="flex w-full max-w-xs flex-col gap-4 sm:max-w-sm md:px-0 md:pb-4 2xl:max-w-md">
       <div className="flex flex-col gap-1 text-dark">
-        {session &&
-          <Image src={avatar_url} alt="Profile" className="rounded-lg mb-2" width={70} height={70} />
-        }
-        <h2 className="text-2xl font-semibold">{full_name ? full_name : 'Simplificando Historias de Usuario'}</h2>
+        <h2 className="text-2xl font-semibold">Planea sprints en equipo</h2>
         <p className="text-sm font-normal">
-          {session ? 'Ahora puedes invitar a tu equipo de trabajo. ' : 'Facilita las tareas para historias de usuario.'}  {" "}
-          <Link href="/" className="font-semibold text-purple hover:underline">
-            Poker Scrum
-          </Link>
+          Una mejor forma de estimar tareas e historias de usuario.
         </p>
       </div>
-      <div className="flex flex-col gap-2">
-        <AuthButtonServer />
+      <div className="flex flex-col gap-2 text-sm">
+        <div className="flex items-center gap-1  border rounded-lg pe-2 hover:border-black/70 duration-150 transition">
+          <input className="w-full bg-transparent outline-none py-2 px-2.5" type="text" id="name" placeholder="Nombre del Sprint" autoFocus />
+          <CodeXml size={20} className="text-black/30 h-full" />
+        </div>
+        <button className="w-full group flex gap-1 items-center justify-center px-2 py-2.5 bg-black text-white rounded-lg hover:bg-black/90 transition duration-150">
+          Empezar <ArrowUpCircle size={20} className="duration-150 group-hover:rotate-90" />
+        </button>
       </div>
     </div>
   )

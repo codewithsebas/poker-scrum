@@ -5,11 +5,11 @@ const Copyright = () => {
   const currentYear = new Date().getFullYear()
   return (
     <p className="text-center text-sm text-black px-3">
-      Diseñado y Desarrollado por {" "} 
+      Desarrollado por el equipo de {" "} 
       <b>
-        <Link className="text-black" href="https://portfolio-dinamic.vercel.app/">Sebastián Giraldo 🤓</Link>
+        <Link className="text-black" href="https://portfolio-dinamic.vercel.app/">PDT Agencia</Link>
       </b>{" "}
-      <br />
+      
       {currentYear} 
     </p>
   )

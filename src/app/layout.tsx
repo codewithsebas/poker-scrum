@@ -5,7 +5,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Poker Scrum",
+  title: "PDT Poker Scrum",
   description: "Facilita las tareas para historias de usuario.",
 };
 
